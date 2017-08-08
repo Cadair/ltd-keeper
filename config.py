@@ -17,6 +17,7 @@ class Config(object):
     PREFERRED_URL_SCHEME = 'http'
     AWS_ID = os.environ.get('LTD_KEEPER_AWS_ID')
     AWS_SECRET = os.environ.get('LTD_KEEPER_AWS_SECRET')
+    DISABLE_ROUTE53 = os.environ.get('LTD_KEEPER_DISABLE_ROUTE53', False)
     FASTLY_KEY = os.environ.get('LTD_KEEPER_FASTLY_KEY')
     FASTLY_SERVICE_ID = os.environ.get('LTD_KEEPER_FASTLY_ID')
     LTD_DASHER_URL = os.getenv('LTD_DASHER_URL', None)

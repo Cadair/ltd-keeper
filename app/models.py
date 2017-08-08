@@ -228,9 +228,10 @@ class Product(db.Model):
             self.surrogate_key = uuid.uuid4().hex
 
         # Setup Fastly CNAME with Route53
+        ROUTE_53 = not current_app.config['DISABLE_ROUTE53']
         AWS_ID = current_app.config['AWS_ID']
         AWS_SECRET = current_app.config['AWS_SECRET']
-        if AWS_ID is not None and AWS_SECRET is not None:
+        if ROUTE_53 and AWS_ID is not None and AWS_SECRET is not None:
             route53.create_cname(self.domain, self.fastly_domain,
                                  AWS_ID, AWS_SECRET)
 
