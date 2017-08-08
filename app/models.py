@@ -523,6 +523,7 @@ class Edition(db.Model):
         FASTLY_KEY = current_app.config['FASTLY_KEY']
         AWS_ID = current_app.config['AWS_ID']
         AWS_SECRET = current_app.config['AWS_SECRET']
+        AWS_REGION_NAME = current_app.config['AWS_REGION']
 
         # Create a surrogate-key for the edition if it doesn't have one
         if self.surrogate_key is None:
@@ -548,6 +549,7 @@ class Edition(db.Model):
                 dest_path=self.bucket_root_dirname,
                 aws_access_key_id=AWS_ID,
                 aws_secret_access_key=AWS_SECRET,
+                aws_region_name=AWS_REGION_NAME,
                 surrogate_key=self.surrogate_key,
                 # Force Fastly to cache the edition for 1 year
                 surrogate_control='max-age=31536000',
@@ -576,15 +578,18 @@ class Edition(db.Model):
 
         AWS_ID = current_app.config['AWS_ID']
         AWS_SECRET = current_app.config['AWS_SECRET']
+        AWS_REGION_NAME = current_app.config['AWS_REGION']
         if AWS_ID is not None and AWS_SECRET is not None \
                 and self.build is not None:
             s3.copy_directory(self.product.bucket_name,
                               old_bucket_root_dir, new_bucket_root_dir,
                               AWS_ID, AWS_SECRET,
+                              aws_region_name=AWS_REGION_NAME,
                               surrogate_key=self.surrogate_key)
             s3.delete_directory(self.product.bucket_name,
                                 old_bucket_root_dir,
-                                AWS_ID, AWS_SECRET)
+                                AWS_ID, AWS_SECRET,
+                                aws_region_name=AWS_REGION_NAME)
 
     def _validate_slug(self, slug):
         """Ensure that the slug is both unique to the product and meets the

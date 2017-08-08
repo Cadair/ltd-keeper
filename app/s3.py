@@ -17,7 +17,8 @@ log.addHandler(logging.NullHandler())
 
 
 def delete_directory(bucket_name, root_path,
-                     aws_access_key_id, aws_secret_access_key):
+                     aws_access_key_id, aws_secret_access_key,
+                     aws_region_name=None):
     """Delete all objects in the S3 bucket named `bucket_name` that are
     found in the `root_path` directory.
 
@@ -31,6 +32,8 @@ def delete_directory(bucket_name, root_path,
         The access key for your AWS account. Also set `aws_secret_access_key`.
     aws_secret_access_key : str
         The secret key for your AWS account.
+    aws_region_name : str, optional
+        The name of the AWS region.
 
     Raises
     ------
@@ -39,7 +42,8 @@ def delete_directory(bucket_name, root_path,
     """
     session = boto3.session.Session(
         aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key)
+        aws_secret_access_key=aws_secret_access_key,
+        region_name=aws_region_name)
     s3 = session.resource('s3')
     bucket = s3.Bucket(bucket_name)
 
@@ -71,6 +75,7 @@ def delete_directory(bucket_name, root_path,
 
 def copy_directory(bucket_name, src_path, dest_path,
                    aws_access_key_id, aws_secret_access_key,
+                   aws_region_name=None,
                    surrogate_key=None, cache_control=None,
                    surrogate_control=None,
                    create_directory_redirect_object=True):
@@ -98,6 +103,8 @@ def copy_directory(bucket_name, src_path, dest_path,
         The access key for your AWS account. Also set `aws_secret_access_key`.
     aws_secret_access_key : str
         The secret key for your AWS account.
+    aws_region_name : str, optional
+        The name of the AWS region.
     surrogate_key : str, optional
         The surrogate key to insert in the header of all objects in the
         ``x-amz-meta-surrogate-key`` field. This key is used to purge
@@ -140,11 +147,13 @@ def copy_directory(bucket_name, src_path, dest_path,
 
     # Delete any existing objects in the destination
     delete_directory(bucket_name, dest_path,
-                     aws_access_key_id, aws_secret_access_key)
+                     aws_access_key_id, aws_secret_access_key,
+                     aws_region_name=aws_region_name)
 
     session = boto3.session.Session(
         aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key)
+        aws_secret_access_key=aws_secret_access_key,
+        region_name=aws_region_name)
     s3 = session.resource('s3')
     bucket = s3.Bucket(bucket_name)
 
